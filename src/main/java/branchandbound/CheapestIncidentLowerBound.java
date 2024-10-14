@@ -3,6 +3,7 @@ package branchandbound;
 
 import util.tsp.TSPInstance;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,7 +23,24 @@ public class CheapestIncidentLowerBound implements TSPLowerBound {
 
     @Override
     public TSPLowerBoundResult compute(double [][] distanceMatrix, boolean [][] excludedEdges) {
-        // TODO
-         return null;
+        int n = distanceMatrix.length;
+        double lowerBound = 0;
+        List<Edge> selectedEdges = new LinkedList<>(); // List to store the selected edges
+
+        for (int i = 0; i < n; i++) {
+            double min = Double.POSITIVE_INFINITY;
+            int IndOfMin = -1;
+            for (int j = 0; j < n; j++) {
+                if (i!=j && !excludedEdges[j][i] ){
+                    if (distanceMatrix[i][j] < min) {
+                        min = distanceMatrix[i][j];
+                        IndOfMin = j;
+                    }
+                }
+            }
+            selectedEdges.add(new Edge(IndOfMin, i, min));
+            lowerBound += distanceMatrix[i][IndOfMin];
+        }
+        return new TSPLowerBoundResult(lowerBound, selectedEdges);
     }
 }
